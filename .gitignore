@@ -30,3 +30,13 @@
 *.exe
 *.out
 *.app
+
+# Others
+*.txt
+*.log
+*.in
+
+# Templates
+0.cc
+debug.hpp
+Template/
