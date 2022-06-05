@@ -36,13 +36,14 @@ using ll = long long;
 const ll MOD = 2553;
 
 struct Matrix{
-	ll a[5][5];
+	ll a[10][10];
 	Matrix(){
+		memset(a, 0, sizeof a);
 		for(int i=1; i<=4; ++i){
-			a[i][i] = i;
+			a[i][i] = 1ll;
 		}
 	}
-	inline void set_value(const ll b[][5]){
+	inline void set_value(const ll b[5][5]){
 		for(int i=1; i<=4; ++i){
 			for(int j=1; j<=4; ++j){
 				a[i][j] = b[i][j];
@@ -56,10 +57,10 @@ Matrix operator * (const Matrix A, const Matrix	B){
 	for(int i=1; i<=4; ++i){
 		for(int j=1; j<=4; ++j){
 			ll t = 0ll;
-			for(int k=1;k<4; ++k){
-				t = (t + (A.a[i][k] * B.a[k][j]) % MOD) % MOD;
+			for(int k=1;k<=4; ++k){
+				t = t + (A.a[i][k] * B.a[k][j]);
 			}
-			res.a[i][j] = t;
+			res.a[i][j] = t % MOD;
 		}
 	}
 	return res;
@@ -73,14 +74,23 @@ inline void solution(){
 	
 	const ll mtx[5][5] = {
 		{0, 0, 0, 0, 0},
-		{0, e, f, g, h},
-		{0, 1, 0, 0, 0},
-		{0, 0, 1, 0, 0},
-		{0, 0, 0, 1, 0}
+		{0, e, 1, 0, 0},
+		{0, f, 0, 1, 0},
+		{0, g, 0, 0, 1},
+		{0, h, 0, 0, 0}
 	};
-	mem[1].set_value(mtx);
+	const ll bx[5][5] = {
+		{0, 0, 0, 0, 0},
+		{0, d, c, b, a},
+		{0, 0, 0, 0, 0},
+		{0, 0, 0, 0, 0},
+		{0, 0, 0, 0, 0}
+	};
 
-	for(int i=2; i<=62; ++i){
+	base.set_value(bx);
+	mem[0].set_value(mtx);
+
+	for(int i=1; i<=62; ++i){
 		mem[i] = mem[i - 1] * mem[i - 1];
 	}
 
@@ -105,15 +115,16 @@ inline void solution(){
 			continue;
 		}
 		Matrix res;
-		for(ll i=62; i>=1; --i){
-			if(x & (1ll << (i - 1))){
+		res.set_value(bx);
+		x = x - 4; // x = 5
+		for(ll i=62; i>=0; --i){
+			if(x & (1ll << i)){
 				dbg(i);
 				res = res * mem[i];
 			}
 		}
-		ll sum = (e * res.a[1][1] + f * res.a[1][2]) % MOD;
-		sum = (sum + g * res.a[1][3] + h * res.a[1][4]) % MOD;
-		cout << sum << "\n";
+//		res = res * base;
+		cout << res.a[1][1] << "\n";
 	}
 	return ;
 }
